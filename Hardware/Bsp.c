@@ -17,7 +17,7 @@ void BSP_Init(){
 	Digital_Input_Init();
 	//TT_Motor_Init();
 	CH452_Init();
-	RC_Init();
+  RC_Init();
 	//Steering_Init();	
 }
 

@@ -34,5 +34,11 @@
 .\objects\main.o: .\Hardware\Motor.h
 .\objects\main.o: .\Hardware\CH452.h
 .\objects\main.o: .\Hardware\timer.h
-.\objects\main.o: User\ft_usart.h
 .\objects\main.o: User\Movement.h
+.\objects\main.o: .\Hardware\CH452.h
+.\objects\main.o: User\Movement.h
+.\objects\main.o: User\Routine.h
+.\objects\main.o: .\Hardware\CH452.h
+.\objects\main.o: User\Routine.h
+.\objects\main.o: User\Sensor.h
+.\objects\main.o: .\Hardware\CH452.h
