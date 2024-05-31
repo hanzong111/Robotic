@@ -1,61 +1,18 @@
 #include "Bsp.h"
 #include "math.h"
 #include "Motor.h"
-#include "CH452.h"
-#include "timer.h"
-extern u32 duty;
-extern u16 freq;
+
 /********************************************* 主初始化 *********************************************/
 /******/
 void BSP_Init(){
 	// 初始化时钟  
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2  | RCC_APB1Periph_TIM3, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
-						   RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD |
-						   RCC_APB2Periph_AFIO  | RCC_APB2Periph_TIM1, ENABLE); //APB2外设时钟使能 
+	RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD |
+	RCC_APB2Periph_AFIO  | RCC_APB2Periph_TIM1, ENABLE); //APB2外设时钟使能 
 	Motor_Init();
 	Digital_Input_Init();
-	//TT_Motor_Init();
 	CH452_Init();
-  RC_Init();
-	//Steering_Init();	
-}
-
-/************************************* 舵机初始化(test)*************************************/
-/******/
-void Steering_Init(){
- GPIO_InitTypeDef GPIO_InitStructure;
- TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
- TIM_OCInitTypeDef TIM_OCInitStructure;
- 
- RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);
- RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
- 
- GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2;
- GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
- GPIO_Init(GPIOA,&GPIO_InitStructure);
- 
- TIM_InternalClockConfig(TIM2);
- 
- TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
- TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
- TIM_TimeBaseStructure.TIM_Period = 7199;
- TIM_TimeBaseStructure.TIM_Prescaler = 199;
- TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
- TIM_TimeBaseInit(TIM2,&TIM_TimeBaseStructure);
- 
- TIM_OCStructInit(&TIM_OCInitStructure);
- TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; // 选择PWM模式 2
- TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; // 比较输出使能
- TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;// 输出极性高
- TIM_OCInitStructure.TIM_Pulse = 0;
- TIM_OC1Init(TIM2, &TIM_OCInitStructure); // 初始化外设TIM2 OC1
- TIM_OC2Init(TIM2, &TIM_OCInitStructure); // 初始化外设TIM2 OC2
- TIM_OC3Init(TIM2, &TIM_OCInitStructure); // 初始化外设TIM2 OC3
- 
- TIM_Cmd(TIM2,ENABLE);
- 
 }
 /********************************************* ---------- *********************************************/
 /***************************************** 数字量输入初始化 ****************************************/
@@ -138,68 +95,7 @@ void Digital_Input_Init(){
 	GPIO_Input.GPIO_Pin = GPIO_Pin_10;
 	GPIO_Input.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_Input);
-	/****
-	GPIO_ReadInputDataBit(GPIOx, GPIO_Pin);
-	这个函数读取io口输入信号值0或1
-	实例：读取PA12（见板子上的字）信号值
-	      a=GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_12);
-	****/
-	
 }
-/********************************************* ---------- *********************************************/
-/*******************************************  TT马达初始化 ******************************************/
-/******/
-void TT_Motor_Init(){
-	GPIO_InitTypeDef GPIO_TTMotor;
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_OCInitTypeDef TIM_OCInitStructure;
-	// PA3控制A、B相电机的启动和停止（可调）
-	GPIO_TTMotor.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_TTMotor.GPIO_Pin = GPIO_Pin_3;
-	GPIO_TTMotor.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &GPIO_TTMotor);
-	// PA4控制C、D相电机的启动和停止（满速，不可调 or Think independently?）
-	GPIO_TTMotor.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_TTMotor.GPIO_Pin = GPIO_Pin_4;
-	GPIO_TTMotor.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &GPIO_TTMotor);
-	TT_MotorCD_Disable(); // CD相电机失能
-	
-	// 配置TIM2定时器参数
-	TIM_TimeBaseStructure.TIM_Period = (1000-1); // 设置在自动重装载周期值
-	TIM_TimeBaseStructure.TIM_Prescaler = 719; // 设置预分频值
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0; // 设置时钟分割:TDTS = Tck_tim
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; // TIM向上计数模式
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure); // 初始化TIM2
-
-	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2; // 选择PWM模式 2
-	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; // 比较输出使能
-	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;// 输出极性高
-	TIM_OC4Init(TIM2, &TIM_OCInitStructure); // 初始化外设TIM2 OC4
-	TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Enable); // 使能TIM2 OC4预装载寄存器
-	TIM_Cmd(TIM2, ENABLE); // 使能TIM2
-	TIM_SetCompare4(TIM2, 1000); // 初始化AB相转速为0
-}
-
-// 设置AB相TT马达占空比  Duty范围为 [0,1] 闭区间
-void TT_MotorCD_Set_Duty(float Duty){
-	if(Duty > 1)
-		Duty = 1;
-	if(Duty < 0){
-		Duty = 0;
-	}
-	if(Duty == 0)
-		TIM_SetCompare4(TIM2, 1000);
-	else if(Duty == 1)
-		TIM_SetCompare4(TIM2, 10);
-	else{
-		Duty = Duty*500;
-		TIM_SetCompare4(TIM2, 700-Duty);
-	}
-}
-/************************************* ---------- *************************************/
-/************************************* 延时程序 *************************************/
-/******/
 void delay_us(u32 uS){ //uS微秒级延时程序（参考值即是延时数，72MHz时最大值233015）	
 	SysTick->LOAD=AHB_INPUT*uS;      //重装计数初值（当主频是72MHz，72次为1微秒）
 	SysTick->VAL=0x00;        //清空定时器的计数器
@@ -219,6 +115,39 @@ void delay_s(u16 s){ //S秒级延时程序（参考值即是延时数，最大值65535）
 	while( s-- != 0){
 		delay_ms(1000);	//调用1000毫秒的延时
 	}
+}
+
+void EXTIX_Init(void){
+    EXTI_InitTypeDef EXTI_InitStruct;
+    NVIC_InitTypeDef NVIC_InitStruct;
+    Digital_Input_Init();
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource3);
+    GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, GPIO_PinSource15); // 添加对 PC15 引脚的外部中断配置
+    EXTI_InitStruct.EXTI_Line = EXTI_Line3;
+    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
+    EXTI_Init(&EXTI_InitStruct);
+    
+    NVIC_InitStruct.NVIC_IRQChannel = EXTI3_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 2;
+    NVIC_Init(&NVIC_InitStruct);
+    
+    // 添加对 PC15 引脚的外部中断配置
+    EXTI_InitStruct.EXTI_Line = EXTI_Line15;
+    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
+    EXTI_Init(&EXTI_InitStruct);
+    
+    NVIC_InitStruct.NVIC_IRQChannel = EXTI15_10_IRQn;
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 2;
+    NVIC_Init(&NVIC_InitStruct);
 }
 /************************************* ---------- *************************************/
 /*************************************  IIC程序 *************************************/
@@ -300,7 +229,7 @@ void delay_s(u16 s){ //S秒级延时程序（参考值即是延时数，最大值65535）
 //// IIC 发送一个字节
 //// 返回从机有无应答
 //// 1，有应答
-//// 0，无应答 
+//// 0，无应答
 //void IIC_Send_Byte(u8 txd)
 //{ 
 //	u8 t;  
@@ -309,7 +238,7 @@ void delay_s(u16 s){ //S秒级延时程序（参考值即是延时数，最大值65535）
 //	{ 
 //		SDAout=(txd&0x80)>>7;
 //		txd<<=1; 
-//		delay_us(2); // 对 TEA5767 这三个延时都是必须的
+//		delay_us(2); // 延时是必须的
 //		SCL=1;
 //		delay_us(2); 
 //		SCL=0;
@@ -348,3 +277,5 @@ void delay_s(u16 s){ //S秒级延时程序（参考值即是延时数，最大值65535）
 	GPIO_Mode_AF_PP 复用推挽输出
 */
 /************************************* ---------- *************************************/
+
+

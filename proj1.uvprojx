@@ -575,6 +575,16 @@
               <FileType>5</FileType>
               <FilePath>.\User\Servo.h</FilePath>
             </File>
+            <File>
+              <FileName>Test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Test.c</FilePath>
+            </File>
+            <File>
+              <FileName>Test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Test.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

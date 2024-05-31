@@ -41,3 +41,6 @@
 .\objects\sensor.o: User\Routine.h
 .\objects\sensor.o: .\Hardware\CH452.h
 .\objects\sensor.o: User\Routine.h
+.\objects\sensor.o: User\Sensor.h
+.\objects\sensor.o: User\Servo.h
+.\objects\sensor.o: .\Hardware\CH452.h

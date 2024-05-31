@@ -41,3 +41,6 @@
 .\objects\servo.o: User\Routine.h
 .\objects\servo.o: .\Hardware\CH452.h
 .\objects\servo.o: User\Routine.h
+.\objects\servo.o: User\Sensor.h
+.\objects\servo.o: .\Hardware\CH452.h
+.\objects\servo.o: User\Servo.h

@@ -8,6 +8,8 @@
 #include "timer.h"
 #include "Movement.h"
 #include "Routine.h"
+#include "Sensor.h"
+#include "Servo.h"
 
 /* Routine Functions */
 /**

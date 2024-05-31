@@ -31,6 +31,7 @@
 ".\objects\routine.o"
 ".\objects\sensor.o"
 ".\objects\servo.o"
+".\objects\test.o"
 ".\objects\bsp.o"
 ".\objects\sys.o"
 ".\objects\motor.o"

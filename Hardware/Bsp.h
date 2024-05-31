@@ -31,7 +31,7 @@ void TT_MotorCD_Set_Duty(float Duty);
 void Steering_Init(void);
 void TIM3_IRQHandler(void);
 void pwmIC_Init(void);
-
+void CH452_Init(void);
 
 ////IIC所有操作函数
 //void IIC_Init(void);                //初始化IIC的IO口				 

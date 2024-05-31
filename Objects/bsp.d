@@ -33,5 +33,3 @@
 .\objects\bsp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\bsp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\bsp.o: Hardware\Motor.h
-.\objects\bsp.o: Hardware\CH452.h
-.\objects\bsp.o: Hardware\timer.h

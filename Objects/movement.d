@@ -39,3 +39,7 @@
 .\objects\movement.o: User\Routine.h
 .\objects\movement.o: .\Hardware\CH452.h
 .\objects\movement.o: User\Routine.h
+.\objects\movement.o: User\Sensor.h
+.\objects\movement.o: .\Hardware\CH452.h
+.\objects\movement.o: User\Servo.h
+.\objects\movement.o: .\Hardware\CH452.h

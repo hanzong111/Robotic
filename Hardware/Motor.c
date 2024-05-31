@@ -1,5 +1,7 @@
 #include "Motor.h"
 #include "sys.h" // STM头文件
+#include <stdint.h> // 确保包含这个头文件
+
 void Motor_Init(){
 	GPIO_InitTypeDef GPIO_Motor;
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -116,7 +118,13 @@ void Motor_Init(){
 	TIM_Cmd(TIM1, ENABLE); // 使能TIM1
 	TIM_Cmd(TIM3, ENABLE); // 使能TIM3	
 }
-
+// 设置电机1的转速
+//一个PWM信号用于控制电机的转速，另一个PWM信号用于控制电机的方向。
+//通过调整这两个PWM信号的占空比，可以实现电机的转动速度和方向控制。
+//通常情况下，其中一个PWM信号的占空比保持不变（比如始终为100% 或 0%），
+//用来控制电机的方向；而另一个PWM信号的占空比则根据需要进行调整，用来控制电机的转速。
+//这种方式的好处是灵活性高，可以通过简单地调整PWM信号的参数来实现电机的转速和方向控制，
+//而无需额外的逻辑电路。
 void Set_Motor1_RPM(int RPM){
 	if(RPM > 720)
 		RPM = 720;
@@ -198,6 +206,81 @@ void Set_Motor4_RPM(int RPM){
 	}
 }
 
+void TIM2_Int_Init(void)
+{	
+	NVIC_InitTypeDef NVIC_InitStructure;
+	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);   
+	
+	//定时器TIM2初始化
+	TIM_TimeBaseStructure.TIM_Period = Arr; //设置在下一个更新事件装入活动的自动重装载寄存器周期的值	
+	TIM_TimeBaseStructure.TIM_Prescaler =Psc; //设置用来作为TIMx时钟频率除数的预分频值
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //设置时钟分割:TDTS = Tck_tim
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM向上计数模式
+	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure); //根据指定的参数初始化TIMx的时间基数单位
+ 
+	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE ); //使能指定的TIM2中断,允许更新中断
+	TIM_Cmd(TIM2,ENABLE);//定时器2
+	
+	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority= 0 ;//抢占优先级0
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;		//子优先级2
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化NVIC寄存器
+	
+}
 
+void ServoMotor_Config(void){
+
+    GPIO_InitTypeDef GPIO_MOTORInitStructure;
+    TIM_TimeBaseInitTypeDef Tim_MOTORInitStructure;
+    TIM_OCInitTypeDef Time_PWMInitStructure;
+
+    // ???
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+
+    // ??GPIO??? (PA0, PA1, PA2)
+    GPIO_MOTORInitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_MOTORInitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
+    GPIO_MOTORInitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_MOTORInitStructure);
+
+    // ??????????
+    Tim_MOTORInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+    Tim_MOTORInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    Tim_MOTORInitStructure.TIM_Period = 200-1;
+    Tim_MOTORInitStructure.TIM_Prescaler = 7200-1;
+    TIM_TimeBaseInit(TIM2, &Tim_MOTORInitStructure);
+
+    // ???????PWM??? (??1 - PA0)
+    Time_PWMInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
+    Time_PWMInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+    Time_PWMInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(TIM2, &Time_PWMInitStructure);
+    TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);
+
+    // ???????PWM??? (??2 - PA1)
+    TIM_OC2Init(TIM2, &Time_PWMInitStructure);
+    TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Enable);
+
+    // ???????PWM??? (??3 - PA2)
+    TIM_OC3Init(TIM2, &Time_PWMInitStructure);
+    TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
+
+    // ?????
+    TIM_Cmd(TIM2, ENABLE);
+}
+///*************************************
+//**函数功能：电机驱动函数
+//**参数：pwm1---电机驱动速度
+//**		pwm2---电机驱动速度
+//**pwm取值：-100~100
+//**************************************/
+void motor(int pwm1,int pwm2) //zuo you 速度
+{
+	Set_Motor2_RPM(pwm2);
+	Set_Motor4_RPM(pwm1);
+}
 

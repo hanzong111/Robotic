@@ -9,7 +9,12 @@
 #include "Movement.h"
 #include "Routine.h"
 
-void	move_foward(void);
+void	Front_L_motor(int speed);
+void	Front_R_motor(int speed);
+void	Back_L_motor(int speed);
+void	Back_R_motor(int speed);
+
+void	move_foward(int speed);
 void	move_backwards(void);
 void	move_left(void);
 void	move_right(void);

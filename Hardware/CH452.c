@@ -129,30 +129,35 @@ void CH452_SetRam(u8 i,u8 n)
 //没有按键按下返回16
 u8 CH452_GetKey(void)
 {
-	I2C_Start();
-	I2C_SendByte(0x6F);
-	I2C_WaitToAck();
-	u8 ret=I2C_ReadByte();
-	I2C_Stop();
-	switch(ret)
-	{
-		case 0x4A:return 0;
-		case 0x47:return 1;
-		case 0x46:return 2;
-		case 0x45:return 3;
-		case 0x43:return 4;
-		case 0x42:return 5;
-		case 0x41:return 6;
-		case 0x4F:return 7;
-		case 0x4E:return 8;
-		case 0x4D:return 9;
-		case 0x44:return 10;
-		case 0x40:return 11;
-		case 0x4C:return 12;
-		case 0x48:return 13;
-		case 0x4B:return 14;
-		case 0x49:return 15;
-	}
-	return 16;
+    static u8 lastKey = 16; // 初始值为16，表示没有按键被按下
+    I2C_Start();
+    I2C_SendByte(0x6F);
+    I2C_WaitToAck();
+    u8 ret = I2C_ReadByte();
+    I2C_Stop();
+
+    switch(ret)
+    {
+        case 0x4A: lastKey = 0; break;
+        case 0x47: lastKey = 1; break;
+        case 0x46: lastKey = 2; break;
+        case 0x45: lastKey = 3; break;
+        case 0x43: lastKey = 4; break;
+        case 0x42: lastKey = 5; break;
+        case 0x41: lastKey = 6; break;
+        case 0x4F: lastKey = 7; break;
+        case 0x4E: lastKey = 8; break;
+        case 0x4D: lastKey = 9; break;
+        case 0x44: lastKey = 10; break;
+        case 0x40: lastKey = 11; break;
+        case 0x4C: lastKey = 12; break;
+        case 0x48: lastKey = 13; break;
+        case 0x4B: lastKey = 14; break;
+        case 0x49: lastKey = 15; break;
+        default: break; // 如果ret不是上述值中的一个，则保持lastKey不变
+    }
+
+    return lastKey;
 }
+
 
