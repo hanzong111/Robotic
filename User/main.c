@@ -23,7 +23,7 @@ int main(void)
 		delay_ms(20);
 		CH452_Clear();
 		lower_claw();
-		open_claw();
+		Place_Ore();
 		CH452_SetDigit(0 ,0);
 		while (1) 
 		{

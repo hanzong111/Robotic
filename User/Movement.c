@@ -31,3 +31,35 @@ void	move_foward(int speed)
 	Back_L_motor(speed * Correct_BL);
 	Back_R_motor(-speed * Correct_BR);
 }
+
+void	robot_stop()
+{
+	Front_L_motor(0);
+	Front_R_motor(0);
+	Back_L_motor(0);
+	Back_R_motor(0);
+}
+
+void	follow_line(int dir, int speed)
+{
+	if (dir == LEFT)
+	{
+		Front_L_motor((speed * Correct_FL) * 0);
+		Back_L_motor((speed * Correct_BL) * 0);
+		Front_R_motor((-speed * Correct_FR));
+		Back_R_motor((-speed * Correct_BR));
+		delay_ms(30);
+		Front_L_motor((speed * Correct_FL));
+		Back_L_motor((speed * Correct_BL));
+	}
+	else if (dir == RIGHT)
+	{
+		Front_L_motor((speed * Correct_FL));
+		Back_L_motor((speed * Correct_BL));
+		Front_R_motor((-speed * Correct_FR) * 0);
+		Back_R_motor((-speed * Correct_BR) * 0);
+		delay_ms(30);
+		Front_R_motor((-speed * Correct_FR));
+		Back_R_motor((-speed * Correct_BR));
+	}
+}

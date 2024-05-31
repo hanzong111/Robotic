@@ -1,14 +1,14 @@
 #include "Servo.h"
 
-void	open_claw(void)
+void	Grab_Ore(void)
 {
-	TIM_SetCompare2(TIM2, 180);
+	TIM_SetCompare2(TIM2, 185);
 	return ;
 }
 
-void	close_claw(void)
+void	Place_Ore(void)
 {
-	TIM_SetCompare2(TIM2, 189);
+	TIM_SetCompare2(TIM2, 180);
 	return;
 }
 

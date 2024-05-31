@@ -9,8 +9,8 @@
 #include "Movement.h"
 #include "Routine.h"
 
-void	open_claw(void);
-void	close_claw(void);
+void	Grab_Ore(void);
+void	Place_Ore(void);
 void	lower_claw(void);
 void	raise_claw(void);
 

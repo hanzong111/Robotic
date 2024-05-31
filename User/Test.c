@@ -15,12 +15,12 @@ void	claw_test(int n)
 	}
 	if (n == 3)
 	{
-		open_claw();
+		Place_Ore();
 		CH452_SetDigit(0,3);
 	}
 	if (n == 4)
 	{
-		close_claw();
+		Grab_Ore();
 		CH452_SetDigit(0,4);
 	}
 }
