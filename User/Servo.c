@@ -2,7 +2,7 @@
 
 void	Grab_Ore(void)
 {
-	TIM_SetCompare2(TIM2, 185);
+	TIM_SetCompare2(TIM2, 189);
 	return ;
 }
 

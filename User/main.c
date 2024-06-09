@@ -39,6 +39,13 @@ int main(void)
 				Routine_2();
 				break;
 			}
+			else if (n == 3)
+			{
+				turn_left(ROBOT_SPEED);
+				delay_ms(900);
+				robot_stop();
+				break;
+			}
 		}
 		CH452_SetDigit(0 ,3);
 }

@@ -561,14 +561,14 @@
               <FilePath>.\User\Sensor.h</FilePath>
             </File>
             <File>
-              <FileName>Sensor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\User\Sensor.c</FilePath>
-            </File>
-            <File>
               <FileName>Servo.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\User\Servo.c</FilePath>
+            </File>
+            <File>
+              <FileName>Sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Sensor.c</FilePath>
             </File>
             <File>
               <FileName>Servo.h</FileName>

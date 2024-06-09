@@ -27,7 +27,7 @@ void	grayscale_display(t_gs greyscale)
 /*	Time to turn right	*/
 int		turn_right_signal(t_gs port)
 {
-	if(port._1 == 1 && port._2 == 1 && port._3 == 1)
+	if(port._1 == 1 && port._2 == 1 && port._3 == 1 && port._4 == 1)
 		return(1);
 	return(0);
 }
@@ -35,7 +35,7 @@ int		turn_right_signal(t_gs port)
 /*	Time to turn left	*/
 int		turn_left_signal(t_gs port)
 {
-	if(port._8 == 1 && port._7 == 1 && port._6 == 1)
+	if(port._8 == 1 && port._7 == 1 && port._6 == 1 && port._5 == 1)
 		return(1);
 	return(0);
 }
@@ -52,6 +52,22 @@ int	correct_right(t_gs port)
 int	correct_left(t_gs port)
 {
 	if (port._4 == 1 && port._5 == 1 && port._6 == 1)
+		return (1);
+	return (0);
+}
+
+/*	Robot slanting towards the left	*/
+int	correct_right_2(t_gs port)
+{
+	if ((port._4 == 1 && port._5 == 1 && port._6 == 1))
+		return (1);
+	return (0);
+}
+
+/*	Robot slanting towards the right	*/
+int	correct_left_2(t_gs port)
+{
+	if ((port._5 == 1 && port._6 == 1 && port._7 == 1))
 		return (1);
 	return (0);
 }

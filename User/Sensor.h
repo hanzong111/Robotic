@@ -19,13 +19,15 @@ typedef struct s_gs
 		int _6;
 		int _7;
 		int _8;
-} t_gs;
+} t_gs;  
 
 void	grayscale_read(t_gs *port);
 void	grayscale_display(t_gs greyscale);
 
 int	correct_left(t_gs port);
 int correct_right(t_gs port);
+int	correct_left_2(t_gs port);
+int correct_right_2(t_gs port);
 int		turn_left_signal(t_gs grayscale);
 int		turn_right_signal(t_gs grayscale);
 int   No_line(t_gs grayscale);
